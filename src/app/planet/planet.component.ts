@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Event, Router, NavigationEnd } from '@angular/router';
 import { Planet } from '../planet';
 import { PlanetsService } from '../planets.service';
 
@@ -19,37 +19,35 @@ export class PlanetComponent implements OnInit {
   error : any;
 
   constructor(
+    private router: Router,
     private route: ActivatedRoute,
-    private location: Location,
-    private planetsService : PlanetsService
-  ) { }
+    private planetsService : PlanetsService,
+    private location: Location
+  ) { 
+      this.router.events.subscribe( (event : Event) => {
+        if (event instanceof NavigationEnd) {
+          // console.log("router changed")
+          this.getPlanet();
+        }
+      })
+
+  }
 
   ngOnInit() {
-    this.getPlanetId();
-    if (this.id) {
-      this.planetsService.getPlanet(this.id.toString()).subscribe(results => this.planet = results);
-    } else {
-      this.getPlanets();
-    }
+    this.getPlanet();
   }
-  
-  getPlanetId() :void {
+
+  getPlanet() :void {
     this.id = parseInt(this.route.snapshot.paramMap.get('id'));
-    console.log(this.id);
+    this.planetsService.getPlanet(this.id.toString()).subscribe(results =>{ 
+      console.log (results); this.planet = results});
+      console.log(this.location)
   }
   
   getPlanets() :void {
     this.planetsService.getPlanets().subscribe(results => this.planets = results);       
+    console.log("Inside PlanetS");
+    console.log(this.id);
   }
   
-  // getPlanet() : void {
-  //   this.getPlanetId();
-  //   if (this.id) {
-  //     this.planetsService.getPlanet(this.id.toString()).subscribe(results => this.planet = results);
-  //   } else {
-  //     this.planetsService.getPlanets().subscribe(results => this.planets = results);
-  //     console.log(this.planets);
-  //   }
-
-  // }
 }

@@ -1,14 +1,5 @@
-<p>
-  planet works!
-</p>
-<div *ngIf='planets'>
-  <p *ngFor='let p of planets'>
-    ID: {{ p.id }}, Name: {{ p.name }}, Description: {{ p.description }}
-  </p>
-</div>
 <div *ngIf='planet'>
   <p>
     ID: {{ planet.id }}, Name: {{ planet.name }}, Description: {{ planet.description }}
   </p>
 </div>
-<app-detail [planet]="planet"></app-detail>
